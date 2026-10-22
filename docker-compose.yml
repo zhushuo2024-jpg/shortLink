@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  namesrv:
+    image: apache/rocketmq:5.2.0
+    container_name: rmqnamesrv
+    ports:
+      - "9876:9876"
+    command: sh mqnamesrv
+
+  broker:
+    image: apache/rocketmq:5.2.0
+    container_name: rmqbroker
+    ports:
+      - "10911:10911"
+      - "10909:10909"
+    environment:
+      - "JAVA_OPT_EXT=-server -Xms512m -Xmx512m -Xmn128m"
+    depends_on:
+      - namesrv
+    command: sh mqbroker -n namesrv:9876
